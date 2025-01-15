@@ -1,1 +1,2 @@
-1/13/25: did JWT Pizza Client (there's 2 SLC locations, might need to fix that later on haha)
+1/13/25: did JWT Pizza Client (there's 2 SLC locations, might neenpm d to fix that later on haha)
+1/14/25: Did  the notes.md, probably should've pushed incrementally, but I did it all tonight
