@@ -73,5 +73,31 @@ test('register', async ({page}) =>{
     await page.getByRole('button', { name: 'Register' }).click();
     await expect(page.getByRole('link', { name: 'J' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
+})
+
+test("history", async({page}) =>{
+    await page.goto('http://localhost:5173/');
+    await expect(page.getByRole('link', { name: 'History' })).toBeVisible();
+    await expect(page.getByRole('contentinfo')).toContainText('History');
+    await page.getByRole('link', { name: 'History' }).click();
+    await expect(page.getByRole('heading')).toContainText('Mama Rucci, my my');
+    await expect(page.getByRole('main').getByRole('img')).toBeVisible();
+    await expect(page.getByRole('main').getByRole('img')).toBeVisible();
+})
+
+test("logout", async({page}) =>{
+    await page.goto('http://localhost:5173/');
+    await page.getByRole('link', { name: 'Login' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
+    await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+    await page.getByRole('textbox', { name: 'Password' }).fill('admin');
+    await page.getByRole('textbox', { name: 'Password' }).press('Enter');
+    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(page.getByLabel('Global')).toContainText('常');
+    await expect(page.locator('#navbar-dark')).toContainText('Logout');
+    await page.getByRole('link', { name: 'Logout' }).click();
+    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Register' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Register' })).toBeVisible();
 })
