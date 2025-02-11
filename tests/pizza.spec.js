@@ -39,21 +39,6 @@ test('about', async({ page }) => {
     await expect(page.getByRole('main').getByRole('img').first()).toBeVisible();
 })
 
-test('admin dashboard', async ({page}) =>{
-    // await page.goto('http://localhost:5173/');
-    // await page.getByRole('link', { name: 'Login' }).click();
-    // await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
-    // await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
-    // await page.getByRole('textbox', { name: 'Password' }).fill('admin');
-    // await page.getByRole('button', { name: 'Login' }).click();
-    // await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
-    // await page.getByRole('link', { name: 'Admin' }).click();
-    // await expect(page.getByRole('heading')).toContainText('Mama Ricci\'s kitchen');
-    // await expect(page.getByRole('button', { name: 'Add Franchise' })).toBeVisible();
-    // await expect(page.getByRole('main')).toContainText('Add Franchise');
-    // await expect(page.getByRole('main')).toBeEnabled();
-})
-
 test('register', async ({page}) =>{
     await page.goto('http://localhost:5173/');
     await expect(page.locator('#navbar-dark')).toContainText('Register');
