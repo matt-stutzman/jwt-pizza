@@ -98,7 +98,7 @@ test("logout", async({page}) =>{
     await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
 })
 
-test("create and close franchise", async({page}) =>{
+test("create and close franchise / admin dashboard", async({page}) =>{
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).click();
