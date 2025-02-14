@@ -7,6 +7,87 @@ test('home page', async ({ page }) => {
 });
 //needs a mock
 test('buy pizza with login', async ({ page }) => {
+
+    await page.route("*/**/api/auth", async (route) => {
+        expect(route.request().method()).toBe("PUT")
+        const loginResponse = {
+            user: {
+              id: 2,
+              name: "pizza diner",
+              email: "d@jwt.com",
+              roles: [
+                {
+                  "role": "diner"
+                }
+              ]
+            },
+            token: "token"
+          }
+        await route.fulfill({json: loginResponse});
+    })
+
+    await page.route("*/**/api/order/menu", async (route) => {
+        expect(route.request().method()).toBe("GET");
+        const menuResponse = [
+            {
+                "id": 1,
+                "title": "Veggie",
+                "image": "pizza1.png",
+                "price": 0.0038,
+                "description": "A garden of delight"
+            },
+            {
+                "id": 2,
+                "title": "Pepperoni",
+                "image": "pizza2.png",
+                "price": 0.0042,
+                "description": "Spicy treat"
+            },
+            {
+                "id": 3,
+                "title": "Margarita",
+                "image": "pizza3.png",
+                "price": 0.0042,
+                "description": "Essential classic"
+            },
+            {
+                "id": 4,
+                "title": "Crusty",
+                "image": "pizza4.png",
+                "price": 0.0028,
+                "description": "A dry mouthed favorite"
+            },
+            {
+                "id": 5,
+                "title": "Charred Leopard",
+                "image": "pizza5.png",
+                "price": 0.0099,
+                "description": "For those with a darker side"
+            }
+        ]
+        await route.fulfill({json: menuResponse});
+    })
+
+    await page.route("*/**/api/franchise", async(route) => {
+        expect(route.request().method()).toBe("GET");
+        const franchiseResponse =  [{
+            id: 1,
+            name: "pizzaPocket",
+            stores: [
+            {
+                id: 1,
+                name: "SLC"
+            },
+            {
+                id: 2,
+                name: "SLC"
+            }
+            ]
+        }
+    ]
+        await route.fulfill({json: franchiseResponse})
+    })
+
     await page.goto('http://localhost:5173/');
     await page.getByRole('button', { name: 'Order now' }).click();
     await expect(page.locator('h2')).toContainText('Awesome is a click away');
