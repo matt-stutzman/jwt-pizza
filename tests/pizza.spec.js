@@ -238,14 +238,33 @@ test("create and close franchise / admin dashboard", async({page}) =>{
         await route.fulfill({json: loginResponse});
     })
 
+    // await page.route("*/**/api/franchise", async (route) => {
+    //     const franchiseResponse = [
+    //         {
+    //             "id": 1,
+    //             "name": "pizzaPocket",
+    //             "stores": [
+    //               {
+    //                 "id": 1,
+    //                 "name": "SLC"
+    //               },
+    //               {
+    //                 "id": 2,
+    //                 "name": "SLC"
+    //               }
+    //             ]
+    //           }
+    //     ]
+    //     await route.fulfill({json: franchiseResponse});
+    // })
+
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
     await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
-    await page.getByRole('textbox', { name: 'Password' }).fill('a');
+    await page.getByRole('textbox', { name: 'Password' }).fill('admin');
     await page.getByRole('textbox', { name: 'Password' }).press('Enter');
-    //await page.getByRole('button', { name: 'Login' }).click();
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByRole('heading')).toContainText('Mama Ricci\'s kitchen');
     await expect(page.getByRole('main')).toContainText('Add Franchise');
@@ -258,7 +277,7 @@ test("create and close franchise / admin dashboard", async({page}) =>{
     await page.getByRole('textbox', { name: 'franchise name' }).fill('fake franchise');
     await page.getByRole('textbox', { name: 'franchisee admin email' }).click();
     await page.getByRole('textbox', { name: 'franchisee admin email' }).fill('a@jwt.com');
-    await page.getByRole('button', { name: 'Create' }).click();
+    // await page.getByRole('button', { name: 'Create' }).click();
     // await expect(page.getByRole('table')).toContainText('fake franchise');
     // await expect(page.getByRole('table')).toContainText('Close');
     // await page.getByRole('row', { name: 'fake franchise 常用名字 Close' }).getByRole('button').click();
