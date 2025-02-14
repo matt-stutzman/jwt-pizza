@@ -53,12 +53,12 @@ test('register', async ({page}) =>{
                 email: "Jared@jwt.com",
                 roles: [
                 {
-                    "role": "diner"
+                    role: "diner"
                 }
                 ],
                 id: 213
                 },
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmFyZWQiLCJlbWFpbCI6IkphcmVkQGp3dC5jb20iLCJyb2xlcyI6W3sicm9sZSI6ImRpbmVyIn1dLCJpZCI6MjEzLCJpYXQiOjE3MzkzOTA2MDV9.jgJv7mguElEu4ivdC_1y4XZIKE_n5WvMQ6dozYQxX2c"
+            token: "token"
         }
         expect(route.request().method()).toBe("POST");
         expect(route.request().postDataJSON()).toMatchObject(registerRequest);
@@ -98,15 +98,41 @@ test("history", async({page}) =>{
 
 //needs a mock
 test("logout", async({page}) =>{
+
+    await page.route("*/**/api/auth", async (route) => {
+        if(route.request().method() == "DELETE"){
+            const deleteResponse = {
+                message: "logout successful"
+            }
+            await route.fulfill({json: deleteResponse});
+        }
+        else if(route.request().method() == "PUT"){
+            const loginResponse = {
+                user: {
+                    id: 1,
+                    name: "常用名字",
+                    email: "a@jwt.com",
+                    roles: [
+                    {
+                        role: "admin"
+                    }
+                    ]
+                },
+                token: "token"
+            }
+            await route.fulfill({json: loginResponse});
+        }
+    });
+
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
     await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
-    await page.getByRole('textbox', { name: 'Password' }).fill('admin');
+    await page.getByRole('textbox', { name: 'Password' }).fill('password');
     await page.getByRole('button', { name: 'Login' }).click();
+    // await page.waitForResponse("*/api/auth")
     await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
     await page.getByRole('link', { name: 'Logout' }).click();
-    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
 })
 
