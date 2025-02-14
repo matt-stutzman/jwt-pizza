@@ -5,7 +5,7 @@ test('home page', async ({ page }) => {
 
   expect(await page.title()).toBe('JWT Pizza');
 });
-
+//needs a mock
 test('buy pizza with login', async ({ page }) => {
     await page.goto('http://localhost:5173/');
     await page.getByRole('button', { name: 'Order now' }).click();
@@ -26,6 +26,7 @@ test('buy pizza with login', async ({ page }) => {
     await expect(page.getByRole('main')).toContainText('0.008 ₿');
 });
 
+//doesn't need a mock
 test('about', async({ page }) => {
     await page.goto('http://localhost:5173/');
     await expect(page.getByRole('link', { name: 'About' })).toBeVisible();
@@ -40,6 +41,30 @@ test('about', async({ page }) => {
 })
 
 test('register', async ({page}) =>{
+    await page.route('*/**/api/auth', async (route) => {
+        const registerRequest = {
+            name: "Jared",
+            email: "Jared@jwt.com",
+            password: "Jared'spassword"
+        }
+        const registerResult = {
+            user: {
+                name: "Jared",
+                email: "Jared@jwt.com",
+                roles: [
+                {
+                    "role": "diner"
+                }
+                ],
+                id: 213
+                },
+            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmFyZWQiLCJlbWFpbCI6IkphcmVkQGp3dC5jb20iLCJyb2xlcyI6W3sicm9sZSI6ImRpbmVyIn1dLCJpZCI6MjEzLCJpYXQiOjE3MzkzOTA2MDV9.jgJv7mguElEu4ivdC_1y4XZIKE_n5WvMQ6dozYQxX2c"
+        }
+        expect(route.request().method()).toBe("POST");
+        expect(route.request().postDataJSON()).toMatchObject(registerRequest);
+        await route.fulfill({json: registerResult});
+    });
+    
     await page.goto('http://localhost:5173/');
     await expect(page.locator('#navbar-dark')).toContainText('Register');
     await page.getByRole('link', { name: 'Register' }).click();
@@ -60,6 +85,7 @@ test('register', async ({page}) =>{
     await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
 })
 
+//doesn't need a mock
 test("history", async({page}) =>{
     await page.goto('http://localhost:5173/');
     await expect(page.getByRole('link', { name: 'History' })).toBeVisible();
@@ -70,6 +96,7 @@ test("history", async({page}) =>{
     await expect(page.getByRole('main').getByRole('img')).toBeVisible();
 })
 
+//needs a mock
 test("logout", async({page}) =>{
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
@@ -83,6 +110,7 @@ test("logout", async({page}) =>{
     await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
 })
 
+//needs a mock
 test("create and close franchise / admin dashboard", async({page}) =>{
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
@@ -115,7 +143,21 @@ test("create and close franchise / admin dashboard", async({page}) =>{
     await page.getByRole('button', { name: 'Close' }).click();
 })
 
+//needs a mock
 test("create and close store", async ({page}) => {
+    /*
+    put: http://localhost:3000/api/auth 
+    {
+    "email": "f@jwt.com",
+    "password": "franchisee"
+    }
+    get: http://localhost:3000/api/franchise/3
+    post: {
+    "id": "",
+    "name": "fake store"
+    }
+
+    */
     await page.goto('http://localhost:5173/');
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).fill('f@jwt.com');
@@ -138,8 +180,10 @@ test("create and close store", async ({page}) => {
     await expect(page.getByRole('button', { name: 'Close' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
     await page.getByRole('button', { name: 'Close' }).click();
+    
 })
 
+//doesn't need a mock
 test("docs", async({page}) => {
     await page.goto('http://localhost:5173/docs');
     await expect(page.getByRole('main')).toContainText('JWT Pizza API');
